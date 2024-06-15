@@ -1,37 +1,37 @@
 # Real-time Predominant Color Detection App
-Mobile application that uses the device's camera to identify color predominantly in real time.
+Aplicativo mobile que utiliza a câmera do aparelho para identificar cores predominantemente em tempo real.
 
-## Functionalities
-- Real-time color identification
-- Color display in RGB and hexadecimal
-- Intuitive interface
-- Support for image capture
+## Funcionalidades
+- Identificação de cores em tempo real
+- Display colorido em RGB e hexadecimal
+- Interface intuitiva
+- Suporte para captura de imagem
 
-## Installation
+## Instalação
 
-### Prerequisites
-- Android Studio or Xcode
-- Node.js and npm
+### Pré-requisitos
+- Android Studio ou Xcode
+- Node.js e npm
 
-### Installation steps
-1. Clone the repository:
+### Etapas de instalação
+1. Clone o repositório:
     ```sh
-    git clone https://github.com/guavovic/real-time-predominant-color-detection-app.git
+    clone git https://github.com/guavovic/real-time-predominant-color-detection-app.git
     ```
-2. Navigate to the project directory:
+2. Navegue até o diretório do projeto:
     ```sh
-    cd real-time-predominant-color-detection-app
+    cd aplicativo de detecção de cor predominante em tempo real
     ```
-3. Install dependencies:
+3. Instale dependências:
     ```sh
-    npm install
+    instalação npm
     ```
-4. Launch the application:
+4. Inicie o aplicativo:
     ```sh
-    npm start
+    npm início
     ```
 
-## Usage
-1. Open the app.
-2. Point the camera at the desired object or area.
-3. See the predominant color on the screen.
+## Uso
+1. Abra o aplicativo.
+2. Aponte a câmera para o objeto ou área desejada.
+3. Veja a cor predominante na tela.
