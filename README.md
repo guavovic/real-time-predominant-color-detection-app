@@ -1,16 +1,37 @@
-# camera_cor_destaque
+# Real-time Predominant Color Detection App
+Mobile application that uses the device's camera to identify color predominantly in real time.
 
-A new Flutter project.
+## Functionalities
+- Real-time color identification
+- Color display in RGB and hexadecimal
+- Intuitive interface
+- Support for image capture
 
-## Getting Started
+## Installation
 
-This project is a starting point for a Flutter application.
+### Prerequisites
+- Android Studio or Xcode
+- Node.js and npm
 
-A few resources to get you started if this is your first Flutter project:
+### Installation steps
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/guavovic/real-time-predominant-color-detection-app.git
+    ```
+2. Navigate to the project directory:
+    ```sh
+    cd real-time-predominant-color-detection-app
+    ```
+3. Install dependencies:
+    ```sh
+    npm install
+    ```
+4. Launch the application:
+    ```sh
+    npm start
+    ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Usage
+1. Open the app.
+2. Point the camera at the desired object or area.
+3. See the predominant color on the screen.
