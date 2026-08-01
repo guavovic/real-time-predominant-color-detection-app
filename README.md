@@ -2,10 +2,6 @@
 
 Mobile app that uses the device camera to identify predominant colors in real time.
 
-## About
-
-Points the camera at any object or area and detects the predominant color on the fly, displaying it in both RGB and hexadecimal formats.
-
 ## Features
 
 - Real-time color identification
