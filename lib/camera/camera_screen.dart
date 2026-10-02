@@ -1,10 +1,13 @@
 import 'package:camera/camera.dart';
-import 'package:camera_cor_destaque/camera/frame_color.dart';
-import 'package:camera_cor_destaque/color/color_namer.dart';
+import 'package:camera_cor_destaque/camera/yuv_frame.dart';
+import 'package:camera_cor_destaque/detection/detection.dart';
+import 'package:camera_cor_destaque/detection/detections_painter.dart';
+import 'package:camera_cor_destaque/detection/object_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-/// Câmera traseira ao vivo em tela cheia. Tocar na tela fala a cor do centro.
+/// Câmera traseira ao vivo em tela cheia, com os objetos marcados na imagem.
+/// Tocar na tela fala o que a câmera está vendo.
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
 
@@ -14,13 +17,16 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
-  final FlutterTts _tts = FlutterTts();
-  final ColorNamer _namer = ColorNamer();
+  static const int _maxSpoken = 3;
 
+  final FlutterTts _tts = FlutterTts();
+
+  ObjectDetector? _detector;
   CameraController? _controller;
-  CameraImage? _lastFrame;
+  int _sensorOrientation = 0;
+  List<Detection> _detections = const <Detection>[];
   String? _error;
-  String _detectedColor = '';
+  bool _analyzing = false;
 
   @override
   void initState() {
@@ -33,6 +39,7 @@ class _CameraScreenState extends State<CameraScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _controller?.dispose();
+    _detector?.close();
     _tts.stop();
     super.dispose();
   }
@@ -51,6 +58,7 @@ class _CameraScreenState extends State<CameraScreen>
       return;
     }
     try {
+      _detector ??= await ObjectDetector.load();
       final cameras = await availableCameras();
       final back = cameras.firstWhere(
         (camera) => camera.lensDirection == CameraLensDirection.back,
@@ -63,8 +71,9 @@ class _CameraScreenState extends State<CameraScreen>
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
       _controller = controller;
+      _sensorOrientation = back.sensorOrientation;
       await controller.initialize();
-      await controller.startImageStream((frame) => _lastFrame = frame);
+      await controller.startImageStream(_onFrame);
       if (!mounted) {
         return;
       }
@@ -81,16 +90,33 @@ class _CameraScreenState extends State<CameraScreen>
     } on StateError {
       _controller = null;
       await _fail('Este aparelho não tem câmera.');
-    } on Exception {
+    } on Object {
       _controller = null;
       await _fail('Não foi possível abrir a câmera.');
+    }
+  }
+
+  void _onFrame(CameraImage image) {
+    final detector = _detector;
+    if (_analyzing || detector == null || !mounted) {
+      return;
+    }
+    _analyzing = true;
+    try {
+      final found = detector.detect(
+        YuvFrame.fromCameraImage(image),
+        rotation: _sensorOrientation,
+      );
+      setState(() => _detections = found);
+    } finally {
+      _analyzing = false;
     }
   }
 
   Future<void> _closeCamera() async {
     final controller = _controller;
     _controller = null;
-    _lastFrame = null;
+    _detections = const <Detection>[];
     if (mounted) {
       setState(() {});
     }
@@ -105,15 +131,17 @@ class _CameraScreenState extends State<CameraScreen>
     await _speak(message);
   }
 
-  Future<void> _speakColor() async {
-    final frame = _lastFrame;
-    if (frame == null) {
+  Future<void> _speakWhatISee() async {
+    if (_detections.isEmpty) {
+      await _speak('Não encontrei nada.');
       return;
     }
-    final rgb = centerColor(frame);
-    final name = _namer.nameOf(rgb.red, rgb.green, rgb.blue);
-    setState(() => _detectedColor = name);
-    await _speak(name);
+    final biggest = List<Detection>.of(_detections)
+      ..sort(
+        (a, b) =>
+            (b.box.width * b.box.height).compareTo(a.box.width * a.box.height),
+      );
+    await _speak(biggest.take(_maxSpoken).map((d) => d.description).join('. '));
   }
 
   Future<void> _speak(String text) async {
@@ -145,33 +173,21 @@ class _CameraScreenState extends State<CameraScreen>
             ? const Center(child: CircularProgressIndicator())
             : Semantics(
                 button: true,
-                label: 'Câmera ao vivo. Toque para ouvir a cor do centro.',
+                label: 'Câmera ao vivo. Toque para ouvir o que está à frente.',
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: _speakColor,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      Center(child: CameraPreview(controller)),
-                      if (_detectedColor.isNotEmpty)
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            width: double.infinity,
-                            color: Colors.black,
-                            padding: const EdgeInsets.all(16),
-                            child: Text(
-                              _detectedColor,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                  onTap: _speakWhatISee,
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: 1 / controller.value.aspectRatio,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          CameraPreview(controller),
+                          CustomPaint(painter: DetectionsPainter(_detections)),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
