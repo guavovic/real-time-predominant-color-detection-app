@@ -1,19 +1,41 @@
+import 'package:camera_cor_destaque/camera/camera_screen.dart';
 import 'package:camera_cor_destaque/main.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('mostra o título e a instrução da tela inicial', (tester) async {
-    await tester.pumpWidget(const MyApp());
+  final spoken = <String>[];
 
-    expect(find.text('WhatColor'), findsOneWidget);
-    expect(find.text('Clique na tela para tirar uma foto'), findsOneWidget);
+  setUp(() {
+    spoken.clear();
+    TestWidgetsFlutterBinding.ensureInitialized();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(const MethodChannel('flutter_tts'), (
+          call,
+        ) async {
+          if (call.method == 'speak') {
+            spoken.add(call.arguments as String);
+          }
+          return 1;
+        });
   });
 
-  testWidgets('não mostra cor antes da primeira foto', (tester) async {
+  testWidgets('abre direto na câmera', (tester) async {
     await tester.pumpWidget(const MyApp());
 
-    expect(find.textContaining('Cor detectada'), findsNothing);
-    expect(find.byType(Scaffold), findsOneWidget);
+    expect(find.byType(CameraScreen), findsOneWidget);
+  });
+
+  testWidgets('sem câmera disponível, mostra e fala o aviso', (tester) async {
+    await tester.pumpWidget(const MyApp());
+    // O indicador de carregamento anima sem parar, então não dá pra "assentar".
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 200)),
+    );
+    await tester.pump();
+
+    const aviso = 'Não foi possível abrir a câmera.';
+    expect(find.text(aviso), findsOneWidget);
+    expect(spoken, contains(aviso));
   });
 }
