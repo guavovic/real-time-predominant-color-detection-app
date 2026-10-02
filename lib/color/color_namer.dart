@@ -1,5 +1,5 @@
-import 'package:camera_cor_destaque/color/cielab.dart';
-import 'package:camera_cor_destaque/color/palette.dart';
+import 'package:vera/color/cielab.dart';
+import 'package:vera/color/palette.dart';
 
 /// Dá nome a uma cor escolhendo a cor de referência mais próxima da paleta,
 /// medida pela diferença perceptual CIEDE2000.

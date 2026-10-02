@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:camera_cor_destaque/camera/yuv.dart';
-import 'package:camera_cor_destaque/camera/yuv_frame.dart';
+import 'package:vera/camera/yuv.dart';
+import 'package:vera/camera/yuv_frame.dart';
 
 /// Prepara um quadro da câmera para o detector: gira para ficar em pé,
 /// reduz para [size] x [size] e entrega os pixels em RGB, 3 bytes cada.

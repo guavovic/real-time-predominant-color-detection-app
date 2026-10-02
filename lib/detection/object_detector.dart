@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:camera_cor_destaque/camera/yuv_frame.dart';
-import 'package:camera_cor_destaque/color/color_namer.dart';
-import 'package:camera_cor_destaque/detection/detection.dart';
-import 'package:camera_cor_destaque/detection/frame_preprocessor.dart';
-import 'package:camera_cor_destaque/detection/labels_pt.dart';
+import 'package:vera/camera/yuv_frame.dart';
+import 'package:vera/color/color_namer.dart';
+import 'package:vera/detection/detection.dart';
+import 'package:vera/detection/frame_preprocessor.dart';
+import 'package:vera/detection/labels_pt.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 

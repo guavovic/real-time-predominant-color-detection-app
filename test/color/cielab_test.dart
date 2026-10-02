@@ -1,4 +1,4 @@
-import 'package:camera_cor_destaque/color/cielab.dart';
+import 'package:vera/color/cielab.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

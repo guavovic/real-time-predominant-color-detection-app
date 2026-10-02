@@ -1,4 +1,4 @@
-import 'package:camera_cor_destaque/camera/camera_screen.dart';
+import 'package:vera/camera/camera_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WhatColor',
+      title: 'Vera',
       theme: ThemeData(colorSchemeSeed: Colors.blue),
       home: const CameraScreen(),
     );

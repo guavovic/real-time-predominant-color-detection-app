@@ -1,4 +1,4 @@
-import 'package:camera_cor_destaque/camera/yuv.dart';
+import 'package:vera/camera/yuv.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

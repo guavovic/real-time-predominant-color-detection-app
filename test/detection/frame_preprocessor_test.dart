@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:camera_cor_destaque/camera/yuv_frame.dart';
-import 'package:camera_cor_destaque/detection/frame_preprocessor.dart';
+import 'package:vera/camera/yuv_frame.dart';
+import 'package:vera/detection/frame_preprocessor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Quadro de 4x2 em tons de cinza (U e V neutros), com o brilho de cada pixel:

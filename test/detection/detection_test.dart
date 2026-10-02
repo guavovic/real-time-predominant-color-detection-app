@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:camera_cor_destaque/detection/detection.dart';
-import 'package:camera_cor_destaque/detection/labels_pt.dart';
+import 'package:vera/detection/detection.dart';
+import 'package:vera/detection/labels_pt.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Detection at(double left, double right) => Detection(
