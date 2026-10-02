@@ -1,4 +1,4 @@
-import 'package:camera_cor_destaque/detection/detection.dart';
+import 'package:vera/detection/detection.dart';
 import 'package:flutter/material.dart';
 
 /// Desenha uma caixa grossa em volta de cada objeto, com o nome em letra

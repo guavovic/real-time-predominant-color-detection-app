@@ -1,8 +1,8 @@
 import 'package:camera/camera.dart';
-import 'package:camera_cor_destaque/camera/yuv_frame.dart';
-import 'package:camera_cor_destaque/detection/detection.dart';
-import 'package:camera_cor_destaque/detection/detections_painter.dart';
-import 'package:camera_cor_destaque/detection/object_detector.dart';
+import 'package:vera/camera/yuv_frame.dart';
+import 'package:vera/detection/detection.dart';
+import 'package:vera/detection/detections_painter.dart';
+import 'package:vera/detection/object_detector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 

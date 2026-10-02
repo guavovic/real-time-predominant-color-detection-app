@@ -1,4 +1,4 @@
-name: camera_cor_destaque
+name: vera
 description: Aplicativo que diz em voz alta o que a câmera está vendo.
 publish_to: none
 version: 2.0.0-dev+1

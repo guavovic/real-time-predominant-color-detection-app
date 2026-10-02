@@ -1,6 +1,6 @@
-import 'package:camera_cor_destaque/color/cielab.dart';
-import 'package:camera_cor_destaque/color/color_namer.dart';
-import 'package:camera_cor_destaque/color/palette.dart';
+import 'package:vera/color/cielab.dart';
+import 'package:vera/color/color_namer.dart';
+import 'package:vera/color/palette.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

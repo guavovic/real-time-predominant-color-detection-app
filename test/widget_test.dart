@@ -1,5 +1,5 @@
-import 'package:camera_cor_destaque/camera/camera_screen.dart';
-import 'package:camera_cor_destaque/main.dart';
+import 'package:vera/camera/camera_screen.dart';
+import 'package:vera/main.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
