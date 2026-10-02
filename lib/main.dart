@@ -1,4 +1,4 @@
-import 'package:colornames/colornames.dart';
+import 'package:camera_cor_destaque/color/color_namer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,6 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final FlutterTts _tts = FlutterTts();
+  final ColorNamer _namer = ColorNamer();
   String _detectedColor = '';
 
   @override
@@ -54,7 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
 
-    final name = ColorNames.guess(dominant);
+    final argb = dominant.toARGB32();
+    final name = _namer.nameOf(
+      (argb >> 16) & 0xFF,
+      (argb >> 8) & 0xFF,
+      argb & 0xFF,
+    );
     setState(() => _detectedColor = name);
 
     await Future<void>.delayed(const Duration(seconds: 1));
