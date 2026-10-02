@@ -1,53 +1,19 @@
-# Real-time Predominant Color Detection App
+# WhatColor
 
-Mobile app that uses the device camera to identify predominant colors in real time.
+Aplicativo de celular, feito como trabalho de faculdade, para ajudar pessoas cegas a saberem o que a câmera está apontando. Hoje ele tira uma foto, descobre a cor dominante e diz o nome da cor em voz alta, em português.
 
-## Features
+A segunda versão está sendo refeita para funcionar em tempo real e dizer também o que tem à frente da câmera.
 
-- Real-time color identification
-- Color display in RGB and hexadecimal
-- Intuitive interface
-- Image capture support
+## Como foi feito
 
-## Tech Stack
+A primeira versão era um arquivo só, com o projeto copiado em quatro pastas dentro do repositório, sem permissão de câmera declarada e com um erro ao fechar a tela. A segunda está sendo reconstruída em etapas, cada uma com a decisão registrada num ADR.
 
-React Native, Node.js and native camera APIs.
+## Tecnologias
 
-## Installation
+- **Aplicativo:** Flutter e Dart, no Android.
+- **Voz:** síntese de voz do aparelho, em português do Brasil.
+- **Entrega:** GitHub Actions, com análise, testes e compilação a cada mudança.
 
-### Prerequisites
+## Documentação
 
-- Android Studio or Xcode
-- Node.js and npm
-
-### Steps
-
-1. Clone the repository:
-
-```sh
-    git clone https://github.com/guavovic/color-detection-app.git
-```
-
-2. Navigate to the project directory:
-
-```sh
-    cd color-detection-app
-```
-
-3. Install the dependencies:
-
-```sh
-    npm install
-```
-
-4. Start the app:
-
-```sh
-    npm start
-```
-
-## Usage
-
-1. Open the app.
-2. Point the camera at the desired object or area.
-3. See the predominant color on screen.
+- [Decisões de arquitetura](docs/decisions): o porquê de cada escolha, com as alternativas consideradas.

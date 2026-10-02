@@ -1,87 +1,79 @@
-// @dart=2.12
-
-import 'dart:ui';
 import 'package:colornames/colornames.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:image/image.dart' as img;
-import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'dart:async';
 
 void main() {
   runApp(const MyApp());
 }
 
-//============================================================================
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title:'WhatColor',
-      color: Colors.amberAccent,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'WhatColor',
+      theme: ThemeData(colorSchemeSeed: Colors.blue),
       home: const MyHomePage(title: 'WhatColor'),
     );
   }
 }
 
-//============================================================================
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-//============================================================================
 class _MyHomePageState extends State<MyHomePage> {
-  late FlutterTts flutterTts;
-  late bool isListening;
-  late CameraController cameraController;
-  late bool isCameraInitialized;
-  late String detectedColor;
-  late Timer timer;
-  late bool isLoading;
+  final FlutterTts _tts = FlutterTts();
+  String _detectedColor = '';
 
-  //============================================================================
-  @override
-  void initState() {
-    super.initState();
-    flutterTts = FlutterTts();
-    isListening = false;
-    isCameraInitialized = false;
-    detectedColor = '';
-    isLoading = false;
-  }
-
-  //============================================================================
   @override
   void dispose() {
-    flutterTts.stop();
-    cameraController.dispose();
-    timer.cancel();
+    _tts.stop();
     super.dispose();
   }
 
-  //============================================================================
+  Future<void> _takePhotoAndProcess() async {
+    final photo = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (photo == null) {
+      return;
+    }
+
+    final palette = await PaletteGenerator.fromImageProvider(
+      MemoryImage(await photo.readAsBytes()),
+    );
+    final dominant = palette.dominantColor?.color;
+    if (dominant == null) {
+      return;
+    }
+
+    final name = ColorNames.guess(dominant);
+    setState(() => _detectedColor = name);
+
+    await Future<void>.delayed(const Duration(seconds: 1));
+    await _speak('A cor mais dominante na foto é $name.');
+  }
+
+  Future<void> _speak(String text) async {
+    await _tts.setLanguage('pt-BR');
+    await _tts.setPitch(1.0);
+    await _tts.setSpeechRate(0.8);
+    await _tts.speak(text);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title)),
       body: GestureDetector(
-        onTap: () {
-          takePhotoAndProcess();
-        },
+        onTap: _takePhotoAndProcess,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,9 +83,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
-              if (detectedColor.isNotEmpty)
+              if (_detectedColor.isNotEmpty)
                 Text(
-                  'Cor detectada: $detectedColor',
+                  'Cor detectada: $_detectedColor',
                   style: const TextStyle(fontSize: 20),
                 ),
             ],
@@ -102,53 +94,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-
-  Future<void> takePhotoAndProcess() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.camera);
-
-    if (pickedImage != null) {
-      final imageBytes = await pickedImage.readAsBytes();
-      final image = img.decodeImage(imageBytes);
-      final imageData = img.encodePng(image!);
-
-      final codec = await instantiateImageCodec(imageData);
-      final frame = await codec.getNextFrame();
-      final inputImage = frame.image;
-
-      final paletteGenerator = await PaletteGenerator.fromImage(inputImage);
-
-      final dominantColor = paletteGenerator.dominantColor?.color;
-
-      if (dominantColor != null) {
-        String colorName = await getColorName(dominantColor);
-
-        setState(() {
-          detectedColor = colorName;
-          isLoading = false; // Define isLoading como false após obter a cor
-        });
-
-        print('A cor mais dominante na foto é $detectedColor.');
-
-        await Future.delayed(const Duration(seconds: 1));
-        await speakText('A cor mais dominante na foto é $detectedColor.');
-      }
-    }
-  }
-
-  //============================================================================
-  // Configuração da voz
-  Future<void> speakText(String text) async {
-    await flutterTts.setLanguage('pt-BR');
-    await flutterTts.setPitch(1.0);
-    await flutterTts.setSpeechRate(0.8);
-    await flutterTts.speak(text);
-  }
-
-  //============================================================================
-  String getColorName(Color color) {
-    return ColorNames.guess(color);
-  }
-
-  //============================================================================
 }
